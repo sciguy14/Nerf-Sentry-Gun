@@ -1,0 +1,67 @@
+function movement_detector(n)
+% MOVEMENT_DETECTOR
+%
+% Acquires video, uses thresholding to detect movement, plots a bunch of
+% stuff, beeps if there is enough movement. Input argument: integer that
+% represents how many frames the program should capture before stopping.
+if n < 2
+    error('Need to capture at least 2 frames to detect movement.');
+end
+try
+    vid = videoinput('winvideo', 1, 'RGB24_160x120');
+catch
+    error('Camera is disconnected.');
+end
+set(vid,'TriggerRepeat',Inf);
+vid.FrameGrabInterval = 10;
+start(vid);
+try
+    while(vid.FramesAcquired <= n)
+        % Input Video
+        IM = getdata(vid,2);
+        subplot(2,3,1);
+        imshow(IM(:,:,:,1));
+        title('Input Video-Image');
+        % Grayscale Video
+        IMGray = rgb2gray(IM(:,:,1:3));
+        subplot(2,3,3);
+        imshow(IMGray);
+        title('Gray Scale Video');
+        % BW Video
+        IMbw=im2bw(IMGray,0.5);
+        subplot(2,3,2);
+        imshow(IMbw);
+        title('Black & White Video');
+        % Negative Video
+        IMneg=imadjust(IMGray,[0 1],[1 0]);
+        subplot(2,3,4);
+        imshow(IMneg);
+        title('Negative Image Video');
+        % Movement Video
+        i1=IM(:,:,:,1);
+        i2=IM(:,:,:,2);
+        i1=rgb2gray(i1(:,:,1:3));
+        i2=rgb2gray(i2(:,:,1:3));
+        m=abs(double(i1)-double(i2))/255;
+        subplot(2,3,4);imshow(m);title('Movement');
+        [nrows,ncols] = size(m);
+        mt = zeros(nrows, ncols);
+        for i=1:nrows
+            for j=1:ncols
+                if m(i,j) > 0.1
+                    mt(i,j) = 1;
+                end
+            end
+        end
+        subplot(2,3,5);imshow(mt);title('Thresholded Movement');
+        % [trow,tcol] = medianFinder(mt);
+        if sum(sum(mt))>850
+            disp('Movement');
+            beep;
+        end
+    end
+    stop(vid);
+catch
+    stop(vid);
+    error('Error in acquiring video');
+end

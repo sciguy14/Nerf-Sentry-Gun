@@ -1,0 +1,80 @@
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+
+' Pin Constants
+RotateLeftInput     PIN     0
+RotateRightInput    PIN     1
+RotateServo         PIN     12
+LeftLimit           PIN     2 'Viewed from Rear
+RightLimit          PIN     3 'Viewed from rear
+
+
+' Set Pins to Inputs/outputs
+INPUT     RotateLeftInput
+INPUT     RotateRightInput
+OUTPUT    RotateServo
+INPUT     LeftLimit
+INPUT     RightLimit
+
+RotateServo = 0
+TempLeft       VAR Bit
+TempRight      VAR Bit
+counter_left   VAR Byte
+last_left      VAR Byte
+counter_right  VAR Byte
+last_right  VAR Byte
+
+TempLeft       = 0
+TempRight      = 0
+counter_left   = 0
+last_left      = 0
+counter_right  = 0
+last_right     = 0
+
+DO
+
+	' USE THIS CODE IF YOU HAVE LIMIT SENSORS
+	
+  IFcounter_left > 20 AND TempLeft = 1 THEN
+    'PULSOUT RotateServo, 750
+    TempLeft = 0
+  ELSEIF  counter_right > 20 AND TempRight = 1 THEN
+    PULSOUT RotateServo, 750
+    TempRight = 0
+  ENDIF
+
+  IF RotateLeftInput = 1 AND counter_left<=20 THEN
+    PULSOUT RotateServo, 500
+    TempRight = 1
+  ELSEIF RotateRightInput = 1 AND counter_right <=20  THEN
+    PULSOUT RotateServo, 1000
+    TempLeft = 1
+  ENDIF
+
+  ' This stuff is necessary because a disconnected input wire
+  ' acts as an antenna and does not constantly stay at 0.
+  IF counter_left = 0 AND LeftLimit = 1 THEN
+    counter_left = 1
+  ELSEIF counter_right = 0 AND RightLimit = 1 THEN
+    counter_right = 1
+  ELSEIF counter_left > 0 AND LeftLimit = 1 THEN
+    counter_left = counter_left + 1
+  ELSEIF counter_right > 0 AND RightLimit = 1 THEN
+    counter_right = counter_Right + 1
+  ELSE
+    counter_left = 0
+    counter_right = 0
+  ENDIF
+
+	' USE THIS CODE IF YOU HAVE NO LIMIT SENSORS
+
+'  IF RotateLeftInput = 1 THEN
+'    PULSOUT RotateServo, 500
+'  ELSEIF RotateRightInput = 1 THEN
+'    PULSOUT RotateServo, 1000
+'  ENDIF
+
+
+LOOP
+
+END

@@ -1,0 +1,13 @@
+Basic Stamp 2
+Parallax USB Board of Education
+National Instrument DAQ USB-6008
+MATLAB, Data Acquisisiton toolbox, Image Acquisistion Toolbox
+Webcam
+Nerf Vulcan
+Futaba Continuous Rotation Servo
+BUZ73 HEXFET
+IN4001A Diode
+.1 microfarad capacitor
+
+Instructions for Gun Trigger:
+The motor on a nerf vulcan requires about 1 AMP. Follow the schematic wiring schematic to setup the trigger for the motor.  Don't forget to make a common ground between the Gun's 9V and the 5V ground from the DAQ.

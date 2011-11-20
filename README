@@ -1,0 +1,107 @@
+NERF SENTRY GUN --- README
+==========================
+
+1. SOFTWARE INITIALIZATION
+--------------------------
+
+What you will need:
+
+- MATLAB, any version should be fine. We ran ours on R2008b
+- Image Acquisition Toolbox, any version should be fine
+- Data Acquisition Toolbox 2.8 or higher (if you wish to use an NI-DAQ USB 6008)
+
+The basic syntax for running the software is:
+
+>> imaqmotion_tracker(vid)
+
+where vid is an object created via videoinput. The line to initialize this will change slightly depending on
+your camera setup, but it generally looks something like this:
+
+>> vid = videoinput('winvideo',1);
+
+or 
+
+>> vid = videoinput('matrox',1);
+
+If you are having trouble setting up your videoinput object, try
+
+>> imaqhwinfo
+
+for details. Once you've got a working setup, test things out with the following commands:
+
+>> preview(vid) % Creates a preview window for the video object
+>> getsnapshot(vid) % Takes a picture using the camera
+
+Note that the software will not work properly if you don't set the values for ftp_upload and twit properly
+before hand. If you don't want to do this, just comment out the lines. See "CUSTOMIZING" for more details.
+
+Also make sure to download the BASIC stamp code - it shouldn't require much modification, though we wrote it to
+use edge-sensing wires. If you aren't doing that, you might want to remove that functionality.
+
+2. RUNNING THE SOFTWARE
+-----------------------
+
+Once you have the software running, you'll immediately notice some GUI objects:
+
+- Close. This closes the imaqmotion figure, but you'll also need to close the additional "Figure 1" before
+  restarting the software.
+- "Authentication Mode". This tells the gun to actively prompt things that move in front of the camera for 
+  badges and then shoots them if they fail to present a badge. This is the mode that will upload pictures &
+  Twitter.
+- "Freefire Mode". Shoots anything that moves.
+- "Panic Mode". Plays a siren, turns on the gun, and rotates the gun semi-randomly.
+- "Manual Mode". Allows you to control the gun manually. Note that to use this you MUST shift your window
+  focus to "Figure 1" instead of the imaq window. Use arrow keys to rotate the gun and space to fire.
+- Colormap select. Changes the colormap of the window to some various colormaps included in MATLAB.
+- Pause.
+- Toggle Coords. Turns on or off the display of motion & gun coordinates in the window - this makes things
+  run slightly faster.
+- Sounds on or off. Enables or disables the lightsaber noises.
+
+3. CUSTOMIZING
+--------------
+
+There are a lot of values you can change to control how the gun operates when tracking motion. They are 
+explained in more detail within comments in the code, but here is a brief summary of the variables at your
+disposal:
+
+1) Threshold for movement - controls how much the value of a pixel must change between frames captured for it
+   to count as movement
+2) Outlier constraints -
+
+    a) Data required. Controls how much movement must be detected for the x-coordinate of motion to be altered
+       from the average of recent, good data points.
+    b) Distance from recent average. Controls the limit on how far the new x-coordinate of motion can be from
+       the recent average for it to be considered acceptable.
+
+3) Firing constraint - Controls how much motion is necessary to have the gun fire or not. Can be set differently
+   for authorization & freefire mode.
+4) Grace period - how many frames the camera can capture without having the gun fire between authorization
+   sequences.
+5) Turn thresholds -
+
+    a) Position updating. Controls how often the gun position will update.
+    b) Motor signals. Controls how much the gun position has to change to actually send a signal to the motor.
+    c) turnGunTo. You may wish to modify this m-file to control how much the gun turns based on your motor setup.
+       It really requires just playing with values until you find one that works. Ours took a while to accelerate,
+       so we used sqrt(), but if your motor moves in constant time just use (someconstant)*turn. Also, our gun 
+       turned faster in one direction than it did in the other. To accomodate for this, multiply the time by some
+       separate constant in each portion of the if-statement based on which direction it is turning.
+
+6) Sound threshold - how often the sounds play. You don't want this to be much more than like 4.
+
+Customizing twitter and ftp_upload:
+
+twit(strcat(datestr(clock),' , a subject approached the Nerf Sentry Gun and was AUTHORIZED.'),'username','password');
+
+Change the values of 'username' and 'password' to their proper values. The first input argument controls the message
+to be twittered, but the one I have written should be OK. Note that you MUST do this in 2 places in the code.
+
+You should also go to the index.php file in the website folder and add the embed code for your twitter feed in the appropriate location.
+
+To modify ftp_upload, you need to modify the actual function. Open it up and find this line:
+
+f = ftp('server:port','username','password');
+
+and change it to the proper values. Also, this code requires passive FTP to be enabled - open up the readme in the
+passiveFtp folder and implement those instructions.

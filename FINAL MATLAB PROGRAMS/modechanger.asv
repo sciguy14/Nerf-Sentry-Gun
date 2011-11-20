@@ -1,0 +1,28 @@
+function modechanger(source,eventdata)
+
+disp(source);
+disp([eventdata.EventName,'  ',... 
+     get(eventdata.OldValue,'String'),'  ', ...
+     get(eventdata.NewValue,'String')]);
+disp(get(get(source,'SelectedObject'),'String'));
+if strcmp((get(eventdata.NewValue,'String')), 'Authentication Mode')
+    dlmwrite('data/auth.txt',1);
+    dlmwrite('data/manual.txt',0);
+    dlmwrite('data/log.txt',1);
+elseif strcmp((get(eventdata.NewValue,'String')), 'Freefire Mode')
+    dlmwrite('data/auth.txt',0);
+    dlmwrite('data/manual.txt',0);
+    dlmwrite('data/log.txt',0);
+end
+
+if strcmp((get(eventdata.NewValue,'String')), 'Panic Mode')
+    % Panic here
+    
+    dlmwrite('data/auth.txt',0);
+    dlmwrite('data/manual.txt',0);
+end
+
+if strcmp((get(eventdata.NewValue,'String')), 'Manual Mode')
+    dlmwrite('data/manual.txt',1);
+    dlmwrite('data/auth.txt',0);
+end

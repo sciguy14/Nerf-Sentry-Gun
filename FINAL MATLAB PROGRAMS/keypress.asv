@@ -1,0 +1,136 @@
+function varargout = keypress(chan, varargin)
+
+
+% % Begin initialization code - DO NOT EDIT
+% gui_Singleton = 1;
+% gui_State = struct('gui_Name',       mfilename, ...
+%                    'gui_Singleton',  gui_Singleton, ...
+%                    'gui_OpeningFcn', @keypress_OpeningFcn, ...
+%                    'gui_OutputFcn',  @keypress_OutputFcn, ...
+%                    'gui_LayoutFcn',  [] , ...
+%                    'gui_Callback',   []);
+% if nargin && ischar(varargin{1})
+%     gui_State.gui_Callback = str2func(varargin{1});
+% end
+% 
+% if nargout
+%     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+% else
+%     gui_mainfcn(gui_State, varargin{:});
+% end
+% % End initialization code - DO NOT EDIT
+
+
+
+figure = gcf;
+set(figure, 'KeyPressFcn', {@keypress_myFunctionPress, chan});
+set(figure, 'KeyReleaseFcn', {@keypress_myFunctionRelease, chan});
+
+%%
+% --- Executes just before keypress is made visible.
+function keypress_OpeningFcn(hObject, eventdata, handles, varargin)
+
+%lol
+
+
+  
+
+%%
+function myFunctionPress(src,evnt,chan)
+%this function takes in two inputs automatically
+%src is the gui figure
+%evnt is the keypress information
+
+
+
+%this line brings the handles structures into the local workspace
+%now we can use handles.cat in this subfunction!
+handles = guidata(src);
+
+%get the value of the key that was pressed
+%evnt.Key is the lowercase symbol on the key that was pressed
+%so even if you tried "shift + 8", evnt.Key will return 8
+
+if dlmread('data/manual.txt') == 1
+k = evnt.Key;
+
+figure = gcf;
+controls = get(g
+
+if strcmp(k,'space')
+%     axes(handles.axes1);
+%     handles.cats(1)=1;
+%     bar(handles.cats);
+%     guidata(src, handles); 
+    control(chan,1,1);
+end
+if strcmp(k,'leftarrow')
+%     axes(handles.axes1);
+%     handles.cats(2)=1;
+%     bar(handles.cats);
+%     guidata(src, handles);
+    control(chan,2,1);
+end
+if strcmp(k,'rightarrow')
+%     axes(handles.axes1);
+%     handles.cats(3)=1;
+%     bar(handles.cats);
+%     guidata(src, handles); 
+    control(chan,3,1);
+end
+end
+
+
+%%
+function myFunctionRelease(src,evnt,chan)
+%this function takes in two inputs automatically
+%src is the gui figure
+%evnt is the keypress information
+
+
+%this line brings the handles structures into the local workspace
+%now we can use handles.cat in this subfunction!
+handles = guidata(src);
+
+%get the value of the key that was pressed
+%evnt.Key is the lowercase symbol on the key that was pressed
+%so even if you tried "shift + 8", evnt.Key will return 8
+if dlmread('data/manual.txt') == 1
+k = evnt.Key;
+
+if strcmp(k,'space')
+%     axes(handles.axes1);
+%     handles.cats(1)=0;
+%     bar(handles.cats);
+%     guidata(src, handles); 
+    control(chan,1,0);
+end
+if strcmp(k,'leftarrow')
+%     axes(handles.axes1);
+%     handles.cats(2)=0;
+%     bar(handles.cats);
+%     guidata(src, handles);
+    control(chan,2,0);
+end
+if strcmp(k,'rightarrow')
+%     axes(handles.axes1);
+%     handles.cats(3)=0;
+%     bar(handles.cats);
+%     guidata(src, handles);
+    control(chan,3,0);
+end
+end
+
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = keypress_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+

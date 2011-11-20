@@ -1,0 +1,8 @@
+function chan = digitalControl
+%Creates the necessary Digital control Objects
+
+dio = digitalio('nidaq', 'Dev1');
+line1 = addline(dio, 0, 'Out', 'Line1')
+line2 = addline(dio, 0, '
+
+
